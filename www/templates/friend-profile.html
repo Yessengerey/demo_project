@@ -1,0 +1,43 @@
+<ion-view view-title="{{splitName[0]}}'s Profile">
+  <ion-content>
+    <ion-list>
+      <ion-item>
+        <div class="card list">
+          <div class="item item-divider item-positive" style="text-align: center">
+            {{aFriend.fullName}}
+          </div>
+          <div class="item item-body">
+            <img class="full-image" src="img/default-profile.png" style="width: 50%; height: 50%;
+                          margin-left: 25%;
+                          margin-right: 25%">
+
+            <button class = "button button-light button-full" ng-click = "show()">
+              <i class = "icon ion-ios-camera"></i>
+              Change Photo
+            </button>
+          </div>
+          <div class = "item item-text-wrap item-calm">
+            <i class = "icon ion-ios-heart"></i>
+            Interests
+            </div>
+            <div class = "item item-text-wrap">
+              <p>&#8226 {{all_ints[0]}}</p>
+              <p>&#8226 {{all_ints[1]}}</p>
+              <p>&#8226 {{all_ints[2]}}</p>
+            </div>
+            <!-- <p>First name: {{splitName[0]}}</p>
+            <p>Last name: {{splitName[1]}}</p> -->
+
+          <div class="item item-text-wrap item-calm">
+            <i class = "icon ion-ios-location"> </i>
+            Geolocation
+          </div>
+          <div class = "item item-text-wrap">
+            <p>Latitude: {{aFriend.geolocation.latitude}}</p>
+            <p>Longitude: {{aFriend.geolocation.longitude}}</p>
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
