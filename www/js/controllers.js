@@ -1,5 +1,14 @@
 angular.module('starter.controllers', [])
 
+// .service('Clt2Service', function($http, $q){
+//   function getInfo(){
+//     var request = $http({
+//       method: 'GET'
+//       url: 'https://boiling-meadow-91680.herokuapp.com/'
+//     });
+//   }
+// });
+
 .controller('DashCtrl', function($scope) {})
 
 .controller('ChatsCtrl', function($scope, Chats) {
