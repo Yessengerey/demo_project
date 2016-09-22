@@ -13,6 +13,12 @@ app.all('*', function(req, res, next) {
 // API Routes
 // app.get('/blah', routeHandler);
 
+app.get('/get', function (req, res) {
+  res.json({
+    foo: true
+  });
+});
+
 app.set('port', process.env.PORT || 5000);
 
 app.listen(app.get('port'), function () {
