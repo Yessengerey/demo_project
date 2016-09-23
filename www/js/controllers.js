@@ -1,14 +1,5 @@
 angular.module('starter.controllers', [])
 
-// .service('Clt2Service', function($http, $q){
-//   function getInfo(){
-//     var request = $http({
-//       method: 'GET'
-//       url: 'https://boiling-meadow-91680.herokuapp.com/'
-//     });
-//   }
-// });
-
 .controller('DashCtrl', function($scope) {})
 
 .controller('ChatsCtrl', function($scope, Chats) {
@@ -73,42 +64,82 @@ angular.module('starter.controllers', [])
    files through corresponding controllers */
 /* $stateParams allow you to access variables that have been "declared" in the states
    of the factory in this way e.g.: /tabs/:example_var */
-.controller('ProfileCtrl', function($scope, $stateParams, FriendsList, $ionicActionSheet) {
-  $scope.aFriend = FriendsList.getChild($stateParams.friendID);
-  $scope.splitName = $scope.aFriend.fullName.split(" ");
+.controller('ProfileCtrl', function($scope, $stateParams, FriendsList, $ionicActionSheet, $http) {
+    $scope.aFriend = FriendsList.getChild($stateParams.friendID);
+    $scope.splitName = $scope.aFriend.fullName.split(" ");
 
-  //  var children = $scope.aFriend.interests;
+    //  var children = $scope.aFriend.interests;
+    //
+    $scope.all_ints = [];
+    //
+    //   var insertData = function(){
+    //     for(var i = 0; i < children.length; i++){
+    //       $scope.all_ints.push(children[i]);
+    //     }
+    //   }();
+    $scope.all_ints[0] = $scope.aFriend.interests.interest1;
+    $scope.all_ints[1] = $scope.aFriend.interests.interest2;
+    $scope.all_ints[2] = $scope.aFriend.interests.interest3;
+
+    $scope.all_ints.sort();
+    $scope.show = function() {
+      var actionSheet = $ionicActionSheet.show({
+        buttons: [{
+          text: '<b>Take Photo</b>'
+        }, {
+          text: 'Choose from Gallery'
+        }],
+        destructiveText: 'Remove',
+        titleText: 'Change Photo',
+        cancelText: 'Cancel',
+        cancel: function() {
+          //cancellation code here
+        },
+        buttonClicked: function(index) {
+          return true;
+        }
+      });
+    };
+
+    //$scope.myData = Clt2Service.getInfo();
+    $scope.getSomething = function(){
+      $http({
+        method: 'GET',
+        url: 'https://boiling-bayou-95965.herokuapp.com/get'
+      }).then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+
+        $scope.foo = response.data.foo;
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+
+        //$scope.foo = "NOPE";
+      });
+    };
+
+  //   document.addEventListener("deviceready", function () {
   //
-  $scope.all_ints = [];
+  //   var options = {
+  //     quality: 50,
+  //     destinationType: Camera.DestinationType.DATA_URL,
+  //     sourceType: Camera.PictureSourceType.CAMERA,
+  //     allowEdit: true,
+  //     encodingType: Camera.EncodingType.JPEG,
+  //     targetWidth: 100,
+  //     targetHeight: 100,
+  //     popoverOptions: CameraPopoverOptions,
+  //     saveToPhotoAlbum: false,
+	//   correctOrientation:true
+  //   };
   //
-  //   var insertData = function(){
-  //     for(var i = 0; i < children.length; i++){
-  //       $scope.all_ints.push(children[i]);
-  //     }
-  //   }();
-  $scope.all_ints[0] = $scope.aFriend.interests.interest1;
-  $scope.all_ints[1] = $scope.aFriend.interests.interest2;
-  $scope.all_ints[2] = $scope.aFriend.interests.interest3;
-
-  $scope.all_ints.sort();
-  $scope.show = function() {
-    var actionSheet = $ionicActionSheet.show({
-      buttons: [{
-        text: '<b>Take Photo</b>'
-      }, {
-        text: 'Choose from Gallery'
-      }],
-      destructiveText: 'Remove',
-      titleText: 'Change Photo',
-      cancelText: 'Cancel',
-      cancel: function() {
-        //cancellation code here
-      },
-      buttonClicked: function(index) {
-        return true;
-      }
-    });
-  };
-
-
+  //   $cordovaCamera.getPicture(options).then(function(imageData) {
+  //     var image = document.getElementById('profilePic');
+  //     image.src = "data:image/jpeg;base64," + imageData;
+  //   }, function(err) {
+  //     // error
+  //   });
+  //
+  // }, false);
 });

@@ -7,13 +7,17 @@
             {{aFriend.fullName}}
           </div>
           <div class="item item-body">
-            <img class="full-image" src="img/default-profile.png" style="width: 50%; height: 50%;
+            <img id = "profilePic" class="full-image" src="img/default-profile.png" style="width: 50%; height: 50%;
                           margin-left: 25%;
                           margin-right: 25%">
 
             <button class = "button button-light button-full" ng-click = "show()">
               <i class = "icon ion-ios-camera"></i>
               Change Photo
+            </button>
+            <button class = "button button-light button-full" ng-click = "show()">
+              <!-- <i class = "icon ion-ios-camera"></i> -->
+              New Pic
             </button>
           </div>
           <div class = "item item-text-wrap item-calm">
@@ -35,6 +39,13 @@
           <div class = "item item-text-wrap">
             <p>Latitude: {{aFriend.geolocation.latitude}}</p>
             <p>Longitude: {{aFriend.geolocation.longitude}}</p>
+          </div>
+          <button class = "button button-dark button-full" ng-click = "getSomething()">
+            <!-- <i class = "icon ion-ios-camera"></i> -->
+            GET
+          </button>
+          <div class = "item item-text-wrap">
+            <h3>{{foo}}</h3>
           </div>
         </div>
       </ion-item>
