@@ -64,60 +64,163 @@ angular.module('starter.controllers', [])
    files through corresponding controllers */
 /* $stateParams allow you to access variables that have been "declared" in the states
    of the factory in this way e.g.: /tabs/:example_var */
-.controller('ProfileCtrl', function($scope, $stateParams, FriendsList, $ionicActionSheet, $http) {
-    $scope.aFriend = FriendsList.getChild($stateParams.friendID);
-    $scope.splitName = $scope.aFriend.fullName.split(" ");
+.controller('ProfileCtrl', function($scope, $stateParams, FriendsList, $ionicActionSheet, $http, $cordovaCamera) {
 
-    //  var children = $scope.aFriend.interests;
-    //
-    $scope.all_ints = [];
-    //
-    //   var insertData = function(){
-    //     for(var i = 0; i < children.length; i++){
-    //       $scope.all_ints.push(children[i]);
-    //     }
-    //   }();
-    $scope.all_ints[0] = $scope.aFriend.interests.interest1;
-    $scope.all_ints[1] = $scope.aFriend.interests.interest2;
-    $scope.all_ints[2] = $scope.aFriend.interests.interest3;
+  function guid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+      s4() + '-' + s4() + s4() + s4();
+  }
 
-    $scope.all_ints.sort();
-    $scope.show = function() {
-      var actionSheet = $ionicActionSheet.show({
-        buttons: [{
-          text: '<b>Take Photo</b>'
-        }, {
-          text: 'Choose from Gallery'
-        }],
-        destructiveText: 'Remove',
-        titleText: 'Change Photo',
-        cancelText: 'Cancel',
-        cancel: function() {
-          //cancellation code here
-        },
-        buttonClicked: function(index) {
-          return true;
+  var storageRef = firebase.storage().ref('images/' + guid() + '.jpg');
+
+  $scope.imageU = "";
+
+  $scope.aFriend = FriendsList.getChild($stateParams.friendID);
+  $scope.splitName = $scope.aFriend.fullName.split(" ");
+
+  //  var children = $scope.aFriend.interests;
+  //
+  $scope.all_ints = [];
+  //
+  //   var insertData = function(){
+  //     for(var i = 0; i < children.length; i++){
+  //       $scope.all_ints.push(children[i]);
+  //     }
+  //   }();
+  $scope.all_ints[0] = $scope.aFriend.interests.interest1;
+  $scope.all_ints[1] = $scope.aFriend.interests.interest2;
+  $scope.all_ints[2] = $scope.aFriend.interests.interest3;
+  $scope.all_ints.sort();
+
+  $scope.show = function() {
+
+    var actionSheet = $ionicActionSheet.show({
+
+      buttons: [{
+        text: '<b>Take Photo</b>'
+      }, {
+        text: 'Choose from Gallery'
+      }],
+      destructiveText: 'Remove',
+      titleText: 'Change Photo',
+      cancelText: 'Cancel',
+
+      cancel: function() {
+        //cancellation code here
+      },
+
+      buttonClicked: function(index) {
+        if (index === 0) {
+          document.addEventListener("deviceready", function() {
+            var options_camera = {
+              quality: 100,
+              destinationType: Camera.DestinationType.DATA_URL,
+              sourceType: Camera.PictureSourceType.CAMERA,
+              allowEdit: true,
+              encodingType: Camera.EncodingType.JPEG,
+              targetWidth: 100,
+              targetHeight: 100,
+              popoverOptions: CameraPopoverOptions,
+              saveToPhotoAlbum: false,
+              correctOrientation: true
+            };
+            $cordovaCamera.getPicture(options_camera).then(function(imageData) {
+              $scope.image = document.getElementById('profilePic');
+              $scope.imageU = "data:image/jpeg;base64," + imageData;
+            }, function(err) {
+              // error
+            });
+
+          }, false);
+        } else if (index === 1) {
+          document.addEventListener("deviceready", function() {
+            var options_camera = {
+              quality: 100,
+              destinationType: Camera.DestinationType.DATA_URL,
+              sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+              allowEdit: true,
+              encodingType: Camera.EncodingType.JPEG,
+              targetWidth: 100,
+              targetHeight: 100,
+              popoverOptions: CameraPopoverOptions,
+              saveToPhotoAlbum: false,
+              correctOrientation: true
+            };
+            $cordovaCamera.getPicture(options_camera).then(function(imageData) {
+
+            //  var image = document.getElementById('profilePic');
+
+              storageRef.putString(imageData, 'base64').then(function(snapshot){
+                firebase.database().ref().child($stateParams.friendID).update({
+                  imageU: snapshot.downloadURL
+                }).then(function(){
+                  alert('updated');
+                }).catch(function(error){
+                  alert(JSON.stringify(error));
+                });
+              }).catch(function(error){
+                alert(JSON.stringify(error));
+              });
+              // storageRef.putString(imageData, 'base64url').then(function(param){
+              //   alert(JSON.stringify(param));
+              // }).catch(function(error){
+              //   alert(JSON.stringify(error));
+              // });
+              // imageData.on('change', function(evt){
+              //   var ff = evt.target.file[0];
+              //   var uploadTask = storageRef.put(ff);
+              // });
+              // storageRef.putString(imageData, 'base64').then(function(snapshot) {
+              //   console.log('Uploaded a base64 string!');
+              // });
+
+            }, function(err) {
+              // error
+            });
+
+          }, false);
+
+
+
+
         }
-      });
-    };
+        return true;
 
-    //$scope.myData = Clt2Service.getInfo();
-    $scope.getSomething = function(){
-      $http({
-        method: 'GET',
-        url: 'https://boiling-bayou-95965.herokuapp.com/get'
-      }).then(function successCallback(response) {
-        // this callback will be called asynchronously
-        // when the response is available
+      }
+    });
+  };
 
-        $scope.foo = response.data.foo;
-      }, function errorCallback(response) {
-        // called asynchronously if an error occurs
-        // or server returns response with an error status.
+  //$scope.myData = Clt2Service.getInfo();
+  $scope.getSomething = function() {
+    $http({
+      method: 'GET',
+      url: 'https://boiling-bayou-95965.herokuapp.com/get'
+    }).then(function successCallback(response) {
+      // this callback will be called asynchronously
+      // when the response is available
 
-        //$scope.foo = "NOPE";
-      });
-    };
+      $scope.foo = response.data;
+    }, function errorCallback(response) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+
+      //$scope.foo = "NOPE";
+    });
+  };
+  // 
+  // $scope.sendFriendID = function(){
+  //   $http({
+  //     method: 'POST',
+  //     token: $stateParams.friendID
+  //   }).success(function(status){
+  //     alert("ID WAS SENT");
+  //   });
+  // };
 
   //   document.addEventListener("deviceready", function () {
   //
@@ -131,7 +234,7 @@ angular.module('starter.controllers', [])
   //     targetHeight: 100,
   //     popoverOptions: CameraPopoverOptions,
   //     saveToPhotoAlbum: false,
-	//   correctOrientation:true
+  //   correctOrientation:true
   //   };
   //
   //   $cordovaCamera.getPicture(options).then(function(imageData) {

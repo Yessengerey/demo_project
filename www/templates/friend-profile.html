@@ -7,44 +7,40 @@
             {{aFriend.fullName}}
           </div>
           <div class="item item-body">
-            <img id = "profilePic" class="full-image" src="img/default-profile.png" style="width: 50%; height: 50%;
+            <img id="profilePic" class="full-image" accept="image/*" ng-src="{{aFriend.imageU || img/default-profile.png}}" style="width: 50%; height: 50%;
                           margin-left: 25%;
                           margin-right: 25%">
-
-            <button class = "button button-light button-full" ng-click = "show()">
+          </div>
+          <div>
+            <button class="button button-light button-full" ng-click="show()">
               <i class = "icon ion-ios-camera"></i>
               Change Photo
             </button>
-            <button class = "button button-light button-full" ng-click = "show()">
-              <!-- <i class = "icon ion-ios-camera"></i> -->
-              New Pic
-            </button>
           </div>
-          <div class = "item item-text-wrap item-calm">
-            <i class = "icon ion-ios-heart"></i>
-            Interests
-            </div>
-            <div class = "item item-text-wrap">
-              <p>&#8226 {{all_ints[0]}}</p>
-              <p>&#8226 {{all_ints[1]}}</p>
-              <p>&#8226 {{all_ints[2]}}</p>
-            </div>
-            <!-- <p>First name: {{splitName[0]}}</p>
+          <div class="item item-text-wrap item-calm">
+            <i class="icon ion-ios-heart"></i> Interests
+          </div>
+          <div class="item item-text-wrap">
+            <p>&#8226 {{all_ints[0]}}</p>
+            <p>&#8226 {{all_ints[1]}}</p>
+            <p>&#8226 {{all_ints[2]}}</p>
+          </div>
+          <!-- <p>First name: {{splitName[0]}}</p>
             <p>Last name: {{splitName[1]}}</p> -->
 
           <div class="item item-text-wrap item-calm">
-            <i class = "icon ion-ios-location"> </i>
-            Geolocation
+            <i class="icon ion-ios-location"> </i> Geolocation
           </div>
-          <div class = "item item-text-wrap">
+          <div class="item item-text-wrap">
             <p>Latitude: {{aFriend.geolocation.latitude}}</p>
             <p>Longitude: {{aFriend.geolocation.longitude}}</p>
           </div>
-          <button class = "button button-dark button-full" ng-click = "getSomething()">
+          <button class="button button-dark button-full" ng-click="sendFriendID(); getSomething()">
             <!-- <i class = "icon ion-ios-camera"></i> -->
             GET
           </button>
-          <div class = "item item-text-wrap">
+          <div class="item item-text-wrap">
+            <!-- <h3>{{goo.interests}}</h3> -->
             <h3>{{foo}}</h3>
           </div>
         </div>
