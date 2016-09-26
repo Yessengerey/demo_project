@@ -88,6 +88,49 @@ angular.module('starter.controllers', [])
   $scope.all_ints[2] = $scope.aFriend.interests.interest3;
   $scope.all_ints.sort();
 
+  function getPhoto(mode) {
+    document.addEventListener("deviceready", function() {
+      var options_camera = {
+        quality: 100,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: mode === 0 ? Camera.PictureSourceType.CAMERA : Camera.PictureSourceType.PHOTOLIBRARY,
+        allowEdit: true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 100,
+        targetHeight: 100,
+        popoverOptions: CameraPopoverOptions,
+        saveToPhotoAlbum: false,
+        correctOrientation: true
+      };
+      $cordovaCamera.getPicture(options_camera).then(function(imageData) {
+
+        // putString lets you upload a raw base64 or base64url encoded string to firebase
+        // If the upload is successful 'then' snapshot is returned containing data on that image
+        /* Using the ref() [reference] to a firebase, we access a child of the firebase via the
+        firendID that was saved in the $stateParams and then 'update' that child with a new
+        attribute imageU with a value of the image's url. This way the image is linked to that
+        particular contact */
+
+        storageRef.putString(imageData, 'base64').then(function(snapshot){
+          firebase.database().ref().child($stateParams.friendID).update({
+            imageU: snapshot.downloadURL
+          }).then(function(){
+            alert('updated');
+          }).catch(function(error){
+            alert(JSON.stringify(error));
+          });
+        }).catch(function(error){
+          alert(JSON.stringify(error));
+        });
+
+      }, function(err) {
+        // error
+      });
+
+    }, false);
+  }
+
+
   $scope.show = function() {
 
     var actionSheet = $ionicActionSheet.show({
@@ -106,78 +149,7 @@ angular.module('starter.controllers', [])
       },
 
       buttonClicked: function(index) {
-        if (index === 0) {
-          document.addEventListener("deviceready", function() {
-            var options_camera = {
-              quality: 100,
-              destinationType: Camera.DestinationType.DATA_URL,
-              sourceType: Camera.PictureSourceType.CAMERA,
-              allowEdit: true,
-              encodingType: Camera.EncodingType.JPEG,
-              targetWidth: 100,
-              targetHeight: 100,
-              popoverOptions: CameraPopoverOptions,
-              saveToPhotoAlbum: false,
-              correctOrientation: true
-            };
-            storageRef.putString(imageData, 'base64').then(function(snapshot){
-              firebase.database().ref().child($stateParams.friendID).update({
-                imageU: snapshot.downloadURL
-              }).then(function(){
-                alert('updated');
-              }).catch(function(error){
-                alert(JSON.stringify(error));
-              });
-            }).catch(function(error){
-              alert(JSON.stringify(error));
-            });
-
-          }, false);
-        } else if (index === 1) {
-          document.addEventListener("deviceready", function() {
-            var options_camera = {
-              quality: 100,
-              destinationType: Camera.DestinationType.DATA_URL,
-              sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-              allowEdit: true,
-              encodingType: Camera.EncodingType.JPEG,
-              targetWidth: 100,
-              targetHeight: 100,
-              popoverOptions: CameraPopoverOptions,
-              saveToPhotoAlbum: false,
-              correctOrientation: true
-            };
-            $cordovaCamera.getPicture(options_camera).then(function(imageData) {
-
-              // putString lets you upload a raw base64 or base64url encoded string to firebase
-              // If the upload is successful 'then' snapshot is returned containing data on that image
-              /* Using the ref() [reference] to a firebase, we access a child of the firebase via the
-              firendID that was saved in the $stateParams and then 'update' that child with a new
-              attribute imageU with a value of the image's url. This way the image is linked to that
-              particular contact */
-
-              storageRef.putString(imageData, 'base64').then(function(snapshot){
-                firebase.database().ref().child($stateParams.friendID).update({
-                  imageU: snapshot.downloadURL
-                }).then(function(){
-                  alert('updated');
-                }).catch(function(error){
-                  alert(JSON.stringify(error));
-                });
-              }).catch(function(error){
-                alert(JSON.stringify(error));
-              });
-
-            }, function(err) {
-              // error
-            });
-
-          }, false);
-
-
-
-
-        }
+        getPhoto(index);
         return true;
 
       }
