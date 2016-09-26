@@ -82,16 +82,7 @@ angular.module('starter.controllers', [])
 
   $scope.aFriend = FriendsList.getChild($stateParams.friendID);
   $scope.splitName = $scope.aFriend.fullName.split(" ");
-
-  //  var children = $scope.aFriend.interests;
-  //
   $scope.all_ints = [];
-  //
-  //   var insertData = function(){
-  //     for(var i = 0; i < children.length; i++){
-  //       $scope.all_ints.push(children[i]);
-  //     }
-  //   }();
   $scope.all_ints[0] = $scope.aFriend.interests.interest1;
   $scope.all_ints[1] = $scope.aFriend.interests.interest2;
   $scope.all_ints[2] = $scope.aFriend.interests.interest3;
@@ -129,11 +120,16 @@ angular.module('starter.controllers', [])
               saveToPhotoAlbum: false,
               correctOrientation: true
             };
-            $cordovaCamera.getPicture(options_camera).then(function(imageData) {
-              $scope.image = document.getElementById('profilePic');
-              $scope.imageU = "data:image/jpeg;base64," + imageData;
-            }, function(err) {
-              // error
+            storageRef.putString(imageData, 'base64').then(function(snapshot){
+              firebase.database().ref().child($stateParams.friendID).update({
+                imageU: snapshot.downloadURL
+              }).then(function(){
+                alert('updated');
+              }).catch(function(error){
+                alert(JSON.stringify(error));
+              });
+            }).catch(function(error){
+              alert(JSON.stringify(error));
             });
 
           }, false);
@@ -153,7 +149,12 @@ angular.module('starter.controllers', [])
             };
             $cordovaCamera.getPicture(options_camera).then(function(imageData) {
 
-            //  var image = document.getElementById('profilePic');
+              // putString lets you upload a raw base64 or base64url encoded string to firebase
+              // If the upload is successful 'then' snapshot is returned containing data on that image
+              /* Using the ref() [reference] to a firebase, we access a child of the firebase via the
+              firendID that was saved in the $stateParams and then 'update' that child with a new
+              attribute imageU with a value of the image's url. This way the image is linked to that
+              particular contact */
 
               storageRef.putString(imageData, 'base64').then(function(snapshot){
                 firebase.database().ref().child($stateParams.friendID).update({
@@ -166,18 +167,6 @@ angular.module('starter.controllers', [])
               }).catch(function(error){
                 alert(JSON.stringify(error));
               });
-              // storageRef.putString(imageData, 'base64url').then(function(param){
-              //   alert(JSON.stringify(param));
-              // }).catch(function(error){
-              //   alert(JSON.stringify(error));
-              // });
-              // imageData.on('change', function(evt){
-              //   var ff = evt.target.file[0];
-              //   var uploadTask = storageRef.put(ff);
-              // });
-              // storageRef.putString(imageData, 'base64').then(function(snapshot) {
-              //   console.log('Uploaded a base64 string!');
-              // });
 
             }, function(err) {
               // error
@@ -195,16 +184,18 @@ angular.module('starter.controllers', [])
     });
   };
 
-  //$scope.myData = Clt2Service.getInfo();
+  // The method below sends a friendID as part of the URL and retrieves the image at the same time
+  // HTTP GET method with the url path to the required information
   $scope.getSomething = function() {
     $http({
       method: 'GET',
-      url: 'https://boiling-bayou-95965.herokuapp.com/get'
+      url: 'https://boiling-bayou-95965.herokuapp.com/contacts/' + $stateParams.friendID
     }).then(function successCallback(response) {
       // this callback will be called asynchronously
       // when the response is available
-
+      // Upon success, retrieve the data stored in the response which essentially is the json object
       $scope.foo = response.data;
+
     }, function errorCallback(response) {
       // called asynchronously if an error occurs
       // or server returns response with an error status.
@@ -212,37 +203,4 @@ angular.module('starter.controllers', [])
       //$scope.foo = "NOPE";
     });
   };
-  // 
-  // $scope.sendFriendID = function(){
-  //   $http({
-  //     method: 'POST',
-  //     token: $stateParams.friendID
-  //   }).success(function(status){
-  //     alert("ID WAS SENT");
-  //   });
-  // };
-
-  //   document.addEventListener("deviceready", function () {
-  //
-  //   var options = {
-  //     quality: 50,
-  //     destinationType: Camera.DestinationType.DATA_URL,
-  //     sourceType: Camera.PictureSourceType.CAMERA,
-  //     allowEdit: true,
-  //     encodingType: Camera.EncodingType.JPEG,
-  //     targetWidth: 100,
-  //     targetHeight: 100,
-  //     popoverOptions: CameraPopoverOptions,
-  //     saveToPhotoAlbum: false,
-  //   correctOrientation:true
-  //   };
-  //
-  //   $cordovaCamera.getPicture(options).then(function(imageData) {
-  //     var image = document.getElementById('profilePic');
-  //     image.src = "data:image/jpeg;base64," + imageData;
-  //   }, function(err) {
-  //     // error
-  //   });
-  //
-  // }, false);
 });

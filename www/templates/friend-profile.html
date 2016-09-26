@@ -25,23 +25,15 @@
             <p>&#8226 {{all_ints[1]}}</p>
             <p>&#8226 {{all_ints[2]}}</p>
           </div>
-          <!-- <p>First name: {{splitName[0]}}</p>
-            <p>Last name: {{splitName[1]}}</p> -->
 
-          <div class="item item-text-wrap item-calm">
+          <div class="item item-text-wrap item-calm" ng-click="getSomething()">
             <i class="icon ion-ios-location"> </i> Geolocation
           </div>
           <div class="item item-text-wrap">
-            <p>Latitude: {{aFriend.geolocation.latitude}}</p>
-            <p>Longitude: {{aFriend.geolocation.longitude}}</p>
-          </div>
-          <button class="button button-dark button-full" ng-click="sendFriendID(); getSomething()">
-            <!-- <i class = "icon ion-ios-camera"></i> -->
-            GET
-          </button>
-          <div class="item item-text-wrap">
-            <!-- <h3>{{goo.interests}}</h3> -->
-            <h3>{{foo}}</h3>
+            <!-- <p>Latitude: {{aFriend.geolocation.latitude}}</p>
+            <p>Longitude: {{aFriend.geolocation.longitude}}</p> -->
+            <p>Latitude: {{foo.geolocation.latitude}}</p>
+            <p>Longitude: {{foo.geolocation.longitude}}</p>
           </div>
         </div>
       </ion-item>
